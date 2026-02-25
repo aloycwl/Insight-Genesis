@@ -119,6 +119,7 @@ const PopupAudioRecorder = ({
       formData.append("a", address); // Address từ localStorage
 
       // Gọi API mới với auth header
+      console.log("Submitting audio to API...", audioFile, formData);
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",
         headers: {
@@ -126,6 +127,7 @@ const PopupAudioRecorder = ({
         },
         body: formData,
       });
+      console.log("Response received:", response);
 
       if (!response.ok) {
         const errorText = await response.text();
