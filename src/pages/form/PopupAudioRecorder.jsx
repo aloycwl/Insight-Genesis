@@ -47,9 +47,7 @@ const PopupAudioRecorder = ({
       chunksRef.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunksRef.current.push(event.data);
-        }
+        if (event.data.size > 0) chunksRef.current.push(event.data);
       };
 
       mediaRecorder.onstop = () => {
@@ -68,9 +66,8 @@ const PopupAudioRecorder = ({
         setRecordingTime((prev) => {
           const newTime = prev + 1;
           // Tự động dừng sau 45 giây
-          if (newTime >= 45) {
-            stopRecording();
-          }
+          if (newTime >= 45) stopRecording();
+
           return newTime;
         });
       }, 1000);
@@ -85,13 +82,10 @@ const PopupAudioRecorder = ({
       mediaRecorderRef.current.stop();
       setIsRecording(false);
 
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
+      if (timerRef.current) clearInterval(timerRef.current);
 
-      if (streamRef.current) {
+      if (streamRef.current)
         streamRef.current.getTracks().forEach((track) => track.stop());
-      }
     }
   };
 
@@ -109,24 +103,22 @@ const PopupAudioRecorder = ({
       }
 
       // Convert recordedBlob to File với format webm
-      const audioFile = new File([recordedBlob], "recorded-audio.webm", {
+      // const audioFile = new File([recordedBlob], "recorded-audio.webm", {
+      //   type: "audio/webm",
+      // });
+
+      const audioBlob = new Blob(chunksRef.current, {
         type: "audio/webm",
       });
 
       const formData = new FormData();
-      formData.append("audio", audioFile);
+      // formData.append("audio", audioFile);
+      formData.append("audio", audioBlob, "v");
       formData.append("v", selectedVoiceType); // Voice type
       formData.append("a", address); // Address từ localStorage
 
       // Gọi API mới với auth header
-      const url = URL.createObjectURL(audioFile);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = audioFile.name;
-      a.click();
-      URL.revokeObjectURL(url);
-
-      console.log("Submitting audio to API...", audioFile, formData);
+      console.log("Submitting audio...");
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",
         headers: {
@@ -136,49 +128,39 @@ const PopupAudioRecorder = ({
       });
       console.log("Response received:", response);
 
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (!response.ok)
         throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`,
+          `HTTP error! status: ${response.status}, message: ${await response.text()}`,
         );
-      }
 
       const result = await response.json();
 
       if (result) {
         // Xử lý kết quả
-        if (onAnalysisComplete) {
-          onAnalysisComplete(result);
-        }
+        if (onAnalysisComplete) onAnalysisComplete(result);
 
         // Đóng popup sau khi phân tích xong
         onClose();
-      } else {
-        throw new Error("Invalid response data");
-      }
+      } else throw new Error("Invalid response data");
     } catch (error) {
       console.error("Error analyzing recorded audio:", error);
 
-      if (error.name === "TypeError" && error.message.includes("fetch")) {
+      if (error.name === "TypeError" && error.message.includes("fetch"))
         alert(
           "Network connection error. Please check your internet connection and try again.",
         );
-      } else {
-        const errorMessage =
-          error instanceof Error ? error.message : "Unknown error occurred";
-        alert(`An error occurred while parsing voice: ${errorMessage}`);
-      }
+      else
+        alert(
+          `An error occurred while parsing voice: ${error instanceof Error ? error.message : "Unknown error occurred"}`,
+        );
     } finally {
       setIsAnalyzing(false);
     }
   };
 
   const handleRecordClick = () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      startRecording();
-    }
+    if (isRecording) stopRecording();
+    else startRecording();
   };
 
   const handleReset = () => {
