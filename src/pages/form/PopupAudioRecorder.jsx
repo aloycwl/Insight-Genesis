@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import "./PopupAudioRecorder.css";
 
 const SECRET_KEY = "c5UqVPihwtydCKe57YJPtpyE2ryB9AJn";
@@ -6,7 +6,6 @@ const SECRET_KEY = "c5UqVPihwtydCKe57YJPtpyE2ryB9AJn";
 const PopupAudioRecorder = ({
   open,
   onClose,
-  industryOptions = [],
   selectedVoiceType,
   onAnalysisComplete,
 }) => {
@@ -20,15 +19,13 @@ const PopupAudioRecorder = ({
   const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
   const timerRef = useRef(null);
-  const chunksRef = useRef([]);
+  const c = useRef([]);
 
-  // Tạo audioURL từ recordedBlob
   useEffect(() => {
     if (recordedBlob) {
       const url = URL.createObjectURL(recordedBlob);
       setAudioURL(url);
 
-      // Cleanup URL khi component unmount hoặc blob thay đổi
       return () => {
         URL.revokeObjectURL(url);
       };
@@ -44,14 +41,14 @@ const PopupAudioRecorder = ({
 
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-      chunksRef.current = [];
+      c.current = [];
 
       mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) chunksRef.current.push(event.data);
+        if (event.data.size > 0) c.current.push(event.data);
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/wav" });
+        const blob = new Blob(c.current, { type: "audio/webm" });
         setRecordedBlob(blob);
         setRecordingComplete(true);
       };
@@ -65,14 +62,12 @@ const PopupAudioRecorder = ({
       timerRef.current = setInterval(() => {
         setRecordingTime((prev) => {
           const newTime = prev + 1;
-          // Tự động dừng sau 45 giây
           if (newTime >= 45) stopRecording();
 
           return newTime;
         });
       }, 1000);
     } catch (error) {
-      console.error("Error accessing microphone:", error);
       alert("Microphone cannot be accessed. Please allow microphone access.");
     }
   };
@@ -95,36 +90,19 @@ const PopupAudioRecorder = ({
     setIsAnalyzing(true);
 
     try {
-      // Lấy địa chỉ từ localStorage
-      const address = localStorage.getItem("a");
-      if (!address) {
-        alert("Wallet address not found. Please log in again.");
-        return;
-      }
-
-      // Convert recordedBlob to File với format webm
-      // const audioFile = new File([recordedBlob], "recorded-audio.webm", {
-      //   type: "audio/webm",
-      // });
-
-      const audioBlob = new Blob(chunksRef.current, {
-        type: "audio/webm",
-      });
-
-      const formData = new FormData();
-      // formData.append("audio", audioFile);
-      formData.append("audio", audioBlob, "v");
-      formData.append("v", selectedVoiceType); // Voice type
-      formData.append("a", address); // Address từ localStorage
+      const f = new FormData();
+      f.append("audio", new Blob(c.current, { type: "audio/webm" }), "v");
+      f.append("v", selectedVoiceType);
+      f.append("a", localStorage.getItem("a") || "");
 
       // Gọi API mới với auth header
-      console.log("Submitting audio...");
+      console.log("Submitting audio..." + f);
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",
         headers: {
           auth: SECRET_KEY,
         },
-        body: formData,
+        body: f,
       });
       console.log("Response received:", response);
 
