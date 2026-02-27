@@ -6,7 +6,7 @@ const SECRET_KEY = "c5UqVPihwtydCKe57YJPtpyE2ryB9AJn";
 const PopupAudioRecorder = ({
   open,
   onClose,
-  selectedVoiceType,
+  selectedIndustry,
   onAnalysisComplete,
 }) => {
   const [isRecording, setIsRecording] = useState(false);
@@ -90,12 +90,12 @@ const PopupAudioRecorder = ({
     setIsAnalyzing(true);
 
     try {
+      console.log("v: ", selectedIndustry);
       const f = new FormData();
       f.append("audio", new Blob(c.current, { type: "audio/webm" }), "v");
-      f.append("v", selectedVoiceType);
+      f.append("v", selectedIndustry);
       f.append("a", localStorage.getItem("a") || "");
 
-      // Gọi API mới với auth header
       console.log("Submitting audio..." + Array.from(f.entries()));
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",

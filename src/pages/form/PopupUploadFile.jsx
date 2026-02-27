@@ -1,4 +1,3 @@
-import React from 'react';
 import './PopupUploadFile.css';
 
 const PopupUploadFile = ({ open, onClose, onAgree }) => {

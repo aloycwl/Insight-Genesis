@@ -1,4 +1,3 @@
-import React from 'react';
 import './AudioAnalysisResult.css';
 
 const getRiskLevel = (score) => {
