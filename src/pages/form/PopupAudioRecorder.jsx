@@ -96,7 +96,7 @@ const PopupAudioRecorder = ({
       f.append("a", localStorage.getItem("a") || "");
 
       // Gọi API mới với auth header
-      console.log("Submitting audio..." + f);
+      console.log("Submitting audio..." + Array.from(f.entries()));
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",
         headers: {
