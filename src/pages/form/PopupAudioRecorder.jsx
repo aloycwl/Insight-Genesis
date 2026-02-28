@@ -15,7 +15,6 @@ const PopupAudioRecorder = ({
   const [recordedBlob, setRecordedBlob] = useState(null);
   const [recordingComplete, setRecordingComplete] = useState(false);
   const [audioURL, setAudioURL] = useState(null);
-
   const mediaRecorderRef = useRef(null);
   const streamRef = useRef(null);
   const timerRef = useRef(null);
@@ -63,7 +62,6 @@ const PopupAudioRecorder = ({
         setRecordingTime((prev) => {
           const newTime = prev + 1;
           if (newTime >= 45) stopRecording();
-
           return newTime;
         });
       }, 1000);
@@ -90,7 +88,6 @@ const PopupAudioRecorder = ({
     setIsAnalyzing(true);
 
     try {
-      console.log("v: ", selectedIndustry);
       const f = new FormData();
       f.append("audio", new Blob(c.current, { type: "audio/webm" }), "v");
       f.append("v", selectedIndustry);
@@ -99,25 +96,21 @@ const PopupAudioRecorder = ({
       console.log("Submitting audio..." + Array.from(f.entries()));
       const response = await fetch("https://api.insightgenesis.ai/v", {
         method: "POST",
-        headers: {
-          auth: SECRET_KEY,
-        },
+        headers: { auth: SECRET_KEY },
         body: f,
       });
-      console.log("Response received:", response);
 
       if (!response.ok)
         throw new Error(
           `HTTP error! status: ${response.status}, message: ${await response.text()}`,
         );
 
-      const result = await response.json();
+      const result = await response.text();
+
+      alert(result);
 
       if (result) {
-        // Xử lý kết quả
         if (onAnalysisComplete) onAnalysisComplete(result);
-
-        // Đóng popup sau khi phân tích xong
         onClose();
       } else throw new Error("Invalid response data");
     } catch (error) {

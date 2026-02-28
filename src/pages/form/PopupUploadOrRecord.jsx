@@ -1,4 +1,4 @@
-import { useState, useEffect  } from "react";
+import { useState } from "react";
 import "./PopupUploadOrRecord.css";
 import PopupAudioRecorder from "./PopupAudioRecorder";
 
@@ -10,18 +10,9 @@ const PopupUploadOrRecord = ({
   onAnalysisComplete,
 }) => {
   const [showRecorder, setShowRecorder] = useState(false);
-
-  useEffect(() => {
-    if (open) {
-      console.log("PopupUploadOrRecord opened");
-      console.log("selectedIndustry =", selectedIndustry);
-    }
-  }, [open, selectedIndustry]);
-
   const handleStartRecording = () => {
     setShowRecorder(true);
   };
-
   const handleCloseRecorder = () => {
     setShowRecorder(false);
   };
