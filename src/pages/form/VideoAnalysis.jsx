@@ -280,25 +280,25 @@ const VideoAnalysis = () => {
 
   // Fetch IGAIR info balance
   useEffect(() => {
-    const fetchIGAIrInfo = async () => {
-      const address = localStorage.getItem("a");
-      if (!address) return;
-      setIgairLoading(true);
-      setIgairError(null);
-      try {
-        const res = await fetch(
-          `https://api.insightgenesis.ai/info?addr=${address}`,
-        );
-        if (!res.ok) throw new Error("Failed to fetch IGAIr info");
-        const data = await res.json();
-        setIgairInfo(data);
-      } catch (err) {
-        setIgairError("Failed to load IGAIr info");
-      } finally {
-        setIgairLoading(false);
-      }
-    };
-    fetchIGAIrInfo();
+    // const fetchIGAIrInfo = async () => {
+    //   const address = localStorage.getItem("a");
+    //   if (!address) return;
+    //   setIgairLoading(true);
+    //   setIgairError(null);
+    //   try {
+    //     const res = await fetch(
+    //       `https://api.insightgenesis.ai/info?addr=${address}`,
+    //     );
+    //     if (!res.ok) throw new Error("Failed to fetch IGAIr info");
+    //     const data = await res.json();
+    //     setIgairInfo(data);
+    //   } catch (err) {
+    //     setIgairError("Failed to load IGAIr info");
+    //   } finally {
+    //     setIgairLoading(false);
+    //   }
+    // };
+    // fetchIGAIrInfo();
   }, []);
 
   return (
@@ -391,6 +391,9 @@ const VideoAnalysis = () => {
           onUploadAudio={() => {
             setOpenUploadOrRecord(false);
             setOpenAudioDropzone(true);
+          }}
+          onAnalysisComplete={(result) => {
+            setAnalysisResult(result);
           }}
         />
         <PopupAudioDropzone

@@ -10,9 +10,11 @@ const PopupUploadOrRecord = ({
   onAnalysisComplete,
 }) => {
   const [showRecorder, setShowRecorder] = useState(false);
+
   const handleStartRecording = () => {
     setShowRecorder(true);
   };
+
   const handleCloseRecorder = () => {
     setShowRecorder(false);
   };

@@ -24,12 +24,17 @@ const PopupAudioRecorder = ({
     if (recordedBlob) {
       const url = URL.createObjectURL(recordedBlob);
       setAudioURL(url);
-
       return () => {
         URL.revokeObjectURL(url);
       };
     }
   }, [recordedBlob]);
+
+  useEffect(() => {
+    if (open && !isRecording && !mediaRecorderRef.current) {
+      startRecording();
+    }
+  }, [open]);
 
   if (!open) return null;
 
@@ -47,9 +52,14 @@ const PopupAudioRecorder = ({
       };
 
       mediaRecorder.onstop = () => {
+        setIsRecording(false);
         const blob = new Blob(c.current, { type: "audio/webm" });
         setRecordedBlob(blob);
         setRecordingComplete(true);
+
+        setTimeout(() => {
+          analyzeRecordedAudio(blob);
+        }, 200);
       };
 
       mediaRecorder.start();
@@ -57,11 +67,18 @@ const PopupAudioRecorder = ({
       setRecordingTime(0);
       setRecordingComplete(false);
 
-      // Đếm thời gian recording
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+
       timerRef.current = setInterval(() => {
         setRecordingTime((prev) => {
           const newTime = prev + 1;
-          if (newTime >= 45) stopRecording();
+          if (newTime >= 45) {
+            clearInterval(timerRef.current);
+            stopRecording();
+            return 45;
+          }
           return newTime;
         });
       }, 1000);
@@ -71,7 +88,10 @@ const PopupAudioRecorder = ({
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
 
@@ -82,14 +102,15 @@ const PopupAudioRecorder = ({
     }
   };
 
-  const analyzeRecordedAudio = async () => {
-    if (!recordedBlob) return;
+  const analyzeRecordedAudio = async (blobParam) => {
+    const blobToSend = blobParam || recordedBlob;
+    if (!blobToSend) return;
 
     setIsAnalyzing(true);
 
     try {
       const f = new FormData();
-      f.append("audio", new Blob(c.current, { type: "audio/webm" }), "v");
+      f.append("audio", blobToSend, "v.webm");
       f.append("v", selectedIndustry);
       f.append("a", localStorage.getItem("a") || "");
 
@@ -127,11 +148,6 @@ const PopupAudioRecorder = ({
     } finally {
       setIsAnalyzing(false);
     }
-  };
-
-  const handleRecordClick = () => {
-    if (isRecording) stopRecording();
-    else startRecording();
   };
 
   const handleReset = () => {
@@ -181,9 +197,9 @@ const PopupAudioRecorder = ({
             )}
 
             {recordingComplete && !isAnalyzing && (
-              <div className="recording-complete-indicator">
-                ✓ Recording Complete
-              </div>
+              <button className="recorder-btn secondary" onClick={handleReset}>
+                Record Again
+              </button>
             )}
 
             {isAnalyzing && (
@@ -206,49 +222,24 @@ const PopupAudioRecorder = ({
             </div>
           )}
 
-          {/* Instructions */}
           <div className="recorder-instructions">
-            {!isRecording &&
-              !recordingComplete &&
-              "Click the button below to start recording. Talk for at least 45 seconds about anything you like."}
-            {isRecording &&
-              "Please ensure the audio file is at least 45 seconds long to proceed with the analysis accurately."}
-            {recordingComplete &&
-              !isAnalyzing &&
-              "Recording complete! Click 'Analyze' to process your voice or 'Record Again' to start over."}
+            {!recordingComplete &&
+              "Recording will start automatically. Please speak for at least 45 seconds."}
             {isAnalyzing &&
               "Please wait while we analyze your voice recording..."}
           </div>
 
           {/* Action Buttons */}
           <div className="recorder-actions">
-            {!recordingComplete && (
+            {isRecording && (
               <button
-                className={`recorder-btn primary ${isRecording ? "stop" : "start"}`}
-                onClick={handleRecordClick}
-                disabled={isAnalyzing}
+                className="recorder-btn primary stop"
+                onClick={stopRecording}
               >
                 {isRecording
                   ? `Stop Recording (${formatTime(recordingTime)})`
                   : "Start Recording"}
               </button>
-            )}
-
-            {recordingComplete && !isAnalyzing && (
-              <>
-                <button
-                  className="recorder-btn primary"
-                  onClick={analyzeRecordedAudio}
-                >
-                  Analyze Recording
-                </button>
-                <button
-                  className="recorder-btn secondary"
-                  onClick={handleReset}
-                >
-                  Record Again
-                </button>
-              </>
             )}
 
             {isAnalyzing && (
