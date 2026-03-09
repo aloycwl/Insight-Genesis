@@ -1,7 +1,5 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import "./PopupAudioRecorder.css";
-
-const SECRET_KEY = "c5UqVPihwtydCKe57YJPtpyE2ryB9AJn";
 
 const PopupAudioRecorder = ({
   open,
@@ -9,160 +7,66 @@ const PopupAudioRecorder = ({
   selectedIndustry,
   onAnalysisComplete,
 }) => {
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [recordedBlob, setRecordedBlob] = useState(null);
-  const [recordingComplete, setRecordingComplete] = useState(false);
-  const [audioURL, setAudioURL] = useState(null);
-  const mediaRecorderRef = useRef(null);
-  const streamRef = useRef(null);
-  const timerRef = useRef(null);
-  const c = useRef([]);
+  const [seconds, setSeconds] = useState(45);
+  const [finished, setFinished] = useState(false);
 
   useEffect(() => {
-    if (recordedBlob) {
-      const url = URL.createObjectURL(recordedBlob);
-      setAudioURL(url);
-      return () => {
-        URL.revokeObjectURL(url);
+    if (!open) return;
+
+    setSeconds(45);
+    setFinished(false);
+
+    const timer = setInterval(() => {
+      setSeconds((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setFinished(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1e3);
+
+    const startRecording = async () => {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true }),
+        recorder = new MediaRecorder(stream),
+        chunks = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
       };
-    }
-  }, [recordedBlob]);
 
-  useEffect(() => {
-    if (open && !isRecording && !mediaRecorderRef.current) {
-      startRecording();
-    }
+      recorder.onstop = async () => {
+        const f = new FormData();
+        f.append("audio", new Blob(chunks, { type: "audio/webm" }), "v");
+        f.append("v", selectedIndustry || "");
+        f.append("a", localStorage.getItem("a") || "");
+
+        const text = await (
+          await fetch("https://api.insightgenesis.ai/v", {
+            method: "POST",
+            body: f,
+            headers: { auth: "c5UqVPihwtydCKe57YJPtpyE2ryB9AJn" },
+          })
+        ).text();
+        if (onAnalysisComplete) onAnalysisComplete(JSON.parse(text));
+        onClose();
+      };
+
+      recorder.start();
+
+      setTimeout(() => {
+        recorder.stop();
+        stream.getTracks().forEach((t) => t.stop());
+      }, 45e3);
+    };
+
+    startRecording();
+
+    return () => clearInterval(timer);
   }, [open]);
 
   if (!open) return null;
-
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      streamRef.current = stream;
-
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      c.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) c.current.push(event.data);
-      };
-
-      mediaRecorder.onstop = () => {
-        setIsRecording(false);
-        const blob = new Blob(c.current, { type: "audio/webm" });
-        setRecordedBlob(blob);
-        setRecordingComplete(true);
-
-        setTimeout(() => {
-          analyzeRecordedAudio(blob);
-        }, 200);
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      setRecordingTime(0);
-      setRecordingComplete(false);
-
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-
-      timerRef.current = setInterval(() => {
-        setRecordingTime((prev) => {
-          const newTime = prev + 1;
-          if (newTime >= 45) {
-            clearInterval(timerRef.current);
-            stopRecording();
-            return 45;
-          }
-          return newTime;
-        });
-      }, 1000);
-    } catch (error) {
-      alert("Microphone cannot be accessed. Please allow microphone access.");
-    }
-  };
-
-  const stopRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !== "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-
-      if (timerRef.current) clearInterval(timerRef.current);
-
-      if (streamRef.current)
-        streamRef.current.getTracks().forEach((track) => track.stop());
-    }
-  };
-
-  const analyzeRecordedAudio = async (blobParam) => {
-    const blobToSend = blobParam || recordedBlob;
-    if (!blobToSend) return;
-
-    setIsAnalyzing(true);
-
-    try {
-      const f = new FormData();
-      f.append("audio", blobToSend, "v.webm");
-      f.append("v", selectedIndustry);
-      f.append("a", localStorage.getItem("a") || "");
-
-      console.log("Submitting audio..." + Array.from(f.entries()));
-      const response = await fetch("https://api.insightgenesis.ai/v", {
-        method: "POST",
-        headers: { auth: SECRET_KEY },
-        body: f,
-      });
-
-      if (!response.ok)
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${await response.text()}`,
-        );
-
-      const result = await response.text();
-
-      alert(result);
-
-      if (result) {
-        if (onAnalysisComplete) onAnalysisComplete(result);
-        onClose();
-      } else throw new Error("Invalid response data");
-    } catch (error) {
-      console.error("Error analyzing recorded audio:", error);
-
-      if (error.name === "TypeError" && error.message.includes("fetch"))
-        alert(
-          "Network connection error. Please check your internet connection and try again.",
-        );
-      else
-        alert(
-          `An error occurred while parsing voice: ${error instanceof Error ? error.message : "Unknown error occurred"}`,
-        );
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const handleReset = () => {
-    setRecordedBlob(null);
-    setRecordingComplete(false);
-    setRecordingTime(0);
-    setIsAnalyzing(false);
-    setAudioURL(null);
-  };
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
 
   return (
     <div className="popup-recorder-overlay" onClick={onClose}>
@@ -177,77 +81,11 @@ const PopupAudioRecorder = ({
         <h2 className="popup-recorder-title">Voice Recording</h2>
 
         <div className="recorder-content">
-          {/* Microphone Icon */}
-          <div
-            className={`recorder-mic-icon ${isRecording ? "recording" : ""}`}
-          >
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z" />
-              <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
-            </svg>
-          </div>
-
-          {/* Recording Status */}
-          <div className="recorder-status">
-            {isRecording && (
-              <div className="recording-indicator">
-                <span className="recording-dot"></span>
-                Recording...
-              </div>
-            )}
-
-            {recordingComplete && !isAnalyzing && (
-              <button className="recorder-btn secondary" onClick={handleReset}>
-                Record Again
-              </button>
-            )}
-
-            {isAnalyzing && (
-              <div className="analyzing-indicator">🔄 Analyzing...</div>
-            )}
-          </div>
-
-          {/* Timer */}
-          <div className="recorder-timer">
-            {formatTime(recordingTime)} / 0:45
-            {/* {recordingTime >= 45 && <span className="timer-complete"> ✓</span>} */}
-          </div>
-
-          {audioURL && recordingComplete && (
-            <div className="w-full mt-8">
-              <audio controls className="w-full">
-                <source src={audioURL} type="audio/wav" />
-                Your browser does not support the audio element.
-              </audio>
-            </div>
+          {!finished ? (
+            <p>Start talking now, {seconds}s left</p>
+          ) : (
+            <p>Processing...</p>
           )}
-
-          <div className="recorder-instructions">
-            {!recordingComplete &&
-              "Recording will start automatically. Please speak for at least 45 seconds."}
-            {isAnalyzing &&
-              "Please wait while we analyze your voice recording..."}
-          </div>
-
-          {/* Action Buttons */}
-          <div className="recorder-actions">
-            {isRecording && (
-              <button
-                className="recorder-btn primary stop"
-                onClick={stopRecording}
-              >
-                {isRecording
-                  ? `Stop Recording (${formatTime(recordingTime)})`
-                  : "Start Recording"}
-              </button>
-            )}
-
-            {isAnalyzing && (
-              <button className="recorder-btn disabled" disabled>
-                Analyzing...
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </div>

@@ -5,252 +5,34 @@ import footPrintIcon from "../../assets/form-assets/foot-print.svg";
 import { useNavigate } from "react-router-dom";
 import importIcon from "../../assets/form-assets/import-icon.svg";
 import PopupUploadFile from "./PopupUploadFile";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import PopupUploadOrRecord from "./PopupUploadOrRecord";
 import PopupAudioDropzone from "./PopupAudioDropzone";
 import AudioAnalysisResult from "./AudioAnalysisResult";
 
 const industryOptions = [
-  {
-    value: 1,
-    label: "Mortgage Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 2,
-    label: "Commercial Banking",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 3,
-    label: "Peer-to-Peer (P2P) Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 4,
-    label: "Small Business Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 5,
-    label: "Student Loan Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 6,
-    label: "Auto Loan Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 7,
-    label: "Personal Loan Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 8,
-    label: "Payday Loan Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 9,
-    label: "Agricultural and Farm Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 10,
-    label: "Equipment Financing Lending",
-    groupValue: "loanDefault",
-    groupLabel: "Loan Default",
-  },
-  {
-    value: 11,
-    label: "Debt Repayment Probability",
-    groupValue: "debtCollection",
-    groupLabel: "Debt Collection",
-  },
-  {
-    value: 12,
-    label: "Mental Wellness",
-    groupValue: "mentalWellness",
-    groupLabel: "Mental Wellness",
-  },
-  {
-    value: 13,
-    label: "Employee Churn",
-    groupValue: "employeeChurn",
-    groupLabel: "Employee Churn",
-  },
-  {
-    value: 14,
-    label: "Credit Card Fraud Detection",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 15,
-    label: "Insurance Fraud",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 16,
-    label: "Retail Fraud Prevention",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 17,
-    label: "Healthcare Fraud Detection",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 18,
-    label: "Cybersecurity Fraud",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 19,
-    label: "Mortgage Fraud",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 20,
-    label: "Telecommunications Fraud Management",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 21,
-    label: "Tax Evasion Detection",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 22,
-    label: "Identity Theft Prevention",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 23,
-    label: "Securities and Investment Fraud",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 24,
-    label: "General Fraud",
-    groupValue: "fraud",
-    groupLabel: "Fraud",
-  },
-  {
-    value: 25,
-    label: "Candidate Success General",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 26,
-    label: "Construction",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 27,
-    label: "Management",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 28,
-    label: "Programming Tech",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 29,
-    label: "Sales Marketing",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 30,
-    label: "Sales",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 31,
-    label: "Marketing",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 32,
-    label: "AI Content Translation",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 33,
-    label: "Legal Finance",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 34,
-    label: "Design Creativity",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 35,
-    label: "Accountant",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 36,
-    label: "Recruiter",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 37,
-    label: "Operation Manager",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 38,
-    label: "Customer Service Representative",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 39,
-    label: "Technical Support Specialist",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
-  {
-    value: 40,
-    label: "Telesales Agents",
-    groupValue: "candidateSuccess",
-    groupLabel: "Candidate Success",
-  },
+  { value: 3, label: "Loan Default" },
+  { value: 4, label: "Fraud Detection" },
+  { value: 5, label: "Debt Repayment Probability" },
+  { value: 6, label: "Mental Wellness" },
+  { value: 7, label: "Employee Churn" },
+  { value: 8, label: "Candidate Success in General" },
+  { value: 9, label: "Candidate in Construction" },
+  { value: 10, label: "Candidate in Management" },
+  { value: 11, label: "Candidate in Programming" },
+  { value: 12, label: "Candidate in Sales and Marketing" },
+  { value: 13, label: "Candidate in Sales" },
+  { value: 14, label: "Candidate in Marketing" },
+  { value: 15, label: "Candidate in AI Content" },
+  { value: 16, label: "Candidate in Legal Finance" },
+  { value: 17, label: "Candidate in Design" },
+  { value: 18, label: "Candidate in Accounting" },
+  { value: 19, label: "Candidate in Recruitment" },
+  { value: 20, label: "Candidate in Operations" },
+  { value: 21, label: "Candidate in Customer Service" },
+  { value: 22, label: "Candidate in Technical Support" },
+  { value: 23, label: "Candidate in Telesales" },
+  { value: 24, label: "Candidate in Merchant Acquisition" },
 ];
 
 const VideoAnalysis = () => {
@@ -262,44 +44,6 @@ const VideoAnalysis = () => {
     industryOptions[0]?.value || "",
   );
   const [analysisResult, setAnalysisResult] = useState(null);
-  const [setIgairInfo] = useState(null);
-  const [setIgairLoading] = useState(false);
-  const [setIgairError] = useState(null);
-
-  // Group options by their groupValue
-  const groupedOptions = industryOptions.reduce((acc, option) => {
-    if (!acc[option.groupValue]) {
-      acc[option.groupValue] = {
-        label: option.groupLabel,
-        options: [],
-      };
-    }
-    acc[option.groupValue].options.push(option);
-    return acc;
-  }, {});
-
-  // Fetch IGAIR info balance
-  useEffect(() => {
-    // const fetchIGAIrInfo = async () => {
-    //   const address = localStorage.getItem("a");
-    //   if (!address) return;
-    //   setIgairLoading(true);
-    //   setIgairError(null);
-    //   try {
-    //     const res = await fetch(
-    //       `https://api.insightgenesis.ai/info?addr=${address}`,
-    //     );
-    //     if (!res.ok) throw new Error("Failed to fetch IGAIr info");
-    //     const data = await res.json();
-    //     setIgairInfo(data);
-    //   } catch (err) {
-    //     setIgairError("Failed to load IGAIr info");
-    //   } finally {
-    //     setIgairLoading(false);
-    //   }
-    // };
-    // fetchIGAIrInfo();
-  }, []);
 
   return (
     <div className="video-analysis-root">
@@ -394,6 +138,7 @@ const VideoAnalysis = () => {
           }}
           onAnalysisComplete={(result) => {
             setAnalysisResult(result);
+            setOpenUploadOrRecord(false);
           }}
         />
         <PopupAudioDropzone
@@ -416,24 +161,13 @@ const VideoAnalysis = () => {
             value={selectedIndustry}
             onChange={(e) => setSelectedIndustry(e.target.value)}
           >
-            {Object.entries(groupedOptions).map(([groupValue, group]) => (
-              <optgroup key={groupValue} label={group.label}>
-                {group.options.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </optgroup>
+            {industryOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
             ))}
           </select>
         </div>
-
-        <button
-          onClick={() => navigate("/form/result")}
-          className="video-analysis-submit"
-        >
-          Show insight
-        </button>
       </section>
       {analysisResult && (
         <AudioAnalysisResult
