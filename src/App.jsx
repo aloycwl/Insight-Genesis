@@ -9,7 +9,6 @@ import About from './pages/About';
 import GetAIInsight from './pages/GetAIInsight';
 import Staking from './pages/Staking';
 import Resource from './pages/Resource';
-import Blog from './pages/Blog';
 import FAQ from './pages/FAQ';
 import Finance from './pages/solutions/Finance';
 import HealthWellness from './pages/solutions/HealthWellness';
@@ -39,7 +38,8 @@ function App() {
             <Route path="/" element={<GetAIInsight />} />
             <Route path="/staking" element={<Staking />} />
             <Route path="/" element={<Resource />} />
-            <Route path="/blog" element={<Blog />} />
+            {/* Blog route temporarily disabled */}
+            {/* <Route path="/blog" element={<Blog />} /> */}
             <Route path="/faq" element={<FAQ />} />
             <Route path="/solutions/finance" element={<Finance />} />
             <Route path="/solutions/health-wellness" element={<HealthWellness />} />
