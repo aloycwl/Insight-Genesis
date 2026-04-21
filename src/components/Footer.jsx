@@ -36,7 +36,6 @@ const Footer = () => {
               <h3 className="footer-heading">Resource</h3>
               <ul className="footer-links">
                 <li><Link to="/faq">FAQ</Link></li>
-                <li><Link to="/blog">Blog</Link></li>
                 <li><Link to="https://docs.insightgenesis.ai/" target="_blank" rel="noopener noreferrer">Docs</Link></li>
               </ul>
             </div>
