@@ -352,7 +352,6 @@ const Home = () => {
             <div className="resources-buttons">
               <Link to="/faq" className="resource-btn">FAQ</Link>
               <Link to="https://docs.insightgenesis.ai/" target="_blank" rel="noopener noreferrer" className="resource-btn ">DOCS</Link>
-              <Link to="/blog" className="resource-btn">BLOG</Link>
             </div>
           </div>
         </div>
