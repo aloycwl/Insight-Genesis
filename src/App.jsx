@@ -23,6 +23,7 @@ import DigitalFootprint from './pages/form/DigitalFootprint';
 import Result from './pages/form/Result';
 import TermsOfService from './pages/TermsOfService';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Analysis from './pages/Analysis';
 import './App.css';
 
 function App() {
@@ -41,6 +42,7 @@ function App() {
             {/* Blog route temporarily disabled */}
             {/* <Route path="/blog" element={<Blog />} /> */}
             <Route path="/faq" element={<FAQ />} />
+            <Route path="/analysis" element={<Analysis />} />
             <Route path="/solutions/finance" element={<Finance />} />
             <Route path="/solutions/health-wellness" element={<HealthWellness />} />
             <Route path="/solutions/human-resource" element={<HumanResource />} />
