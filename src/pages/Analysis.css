@@ -1,0 +1,238 @@
+.analysis-page {
+  min-height: 100vh;
+  padding: 120px 20px 60px;
+  background-color: var(--background-color, #0f1115);
+  color: var(--text-color, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.analysis-container {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.analysis-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: center;
+  background: linear-gradient(90deg, #fff, #888);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.analysis-subtitle {
+  font-size: 1.1rem;
+  color: #888;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.analysis-form {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: flex-end;
+  transition: border-color 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.05);
+}
+
+.analysis-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  font-family: inherit;
+  resize: none;
+  padding: 8px 0;
+  max-height: 200px;
+  min-height: 24px;
+  outline: none;
+  line-height: 1.5;
+}
+
+.analysis-input::placeholder {
+  color: #666;
+}
+
+.analysis-submit-btn {
+  background: #ffffff;
+  color: #000000;
+  border: none;
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  margin-left: 12px;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.analysis-submit-btn:hover:not(:disabled) {
+  background: #e0e0e0;
+}
+
+.analysis-submit-btn:disabled {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.analysis-submit-btn:disabled .loading-spinner {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-top-color: #fff;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.analysis-feedback-area {
+  width: 100%;
+  min-height: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.analysis-loading-text {
+  color: #888;
+  font-size: 0.9rem;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.analysis-error-text {
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  background: rgba(255, 107, 107, 0.1);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 107, 107, 0.2);
+}
+
+.analysis-result {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 30px;
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+  line-height: 1.6;
+  font-size: 1.05rem;
+}
+
+.analysis-result h1,
+.analysis-result h2,
+.analysis-result h3 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  color: #fff;
+}
+
+.analysis-result h1:first-child,
+.analysis-result h2:first-child,
+.analysis-result h3:first-child {
+  margin-top: 0;
+}
+
+.analysis-result p {
+  margin-bottom: 1em;
+  color: #ccc;
+}
+
+.analysis-result ul,
+.analysis-result ol {
+  margin-bottom: 1em;
+  padding-left: 20px;
+  color: #ccc;
+}
+
+.analysis-result li {
+  margin-bottom: 0.5em;
+}
+
+.analysis-result strong {
+  color: #fff;
+  font-weight: 600;
+}
+
+.analysis-result code {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+.analysis-result pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.analysis-result pre code {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .analysis-page {
+    padding: 100px 16px 40px;
+  }
+
+  .analysis-title {
+    font-size: 2rem;
+  }
+
+  .analysis-result {
+    padding: 20px;
+  }
+}
