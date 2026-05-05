@@ -21,11 +21,7 @@ const Analysis = () => {
     setPrompt('');
 
     try {
-      // NOTE: Original request was for https://api.insightgenesis.ai/infer
-      // but testing shows that endpoint returns 404, while the replit dev url works.
-      // The user gave this url in point 6 of clarification:
-      // https://84de2f23-f24e-4856-8f31-861f73ec3a0f-00-15zf3zz06a3mh.kirk.replit.dev/infer
-      const res = await fetch('https://84de2f23-f24e-4856-8f31-861f73ec3a0f-00-15zf3zz06a3mh.kirk.replit.dev/infer', {
+      const res = await fetch('https://api.insightgenesis.ai/infer', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
