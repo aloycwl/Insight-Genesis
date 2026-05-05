@@ -30,8 +30,31 @@
 .analysis-subtitle {
   font-size: 1.1rem;
   color: #888;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   text-align: center;
+}
+
+.analysis-examples {
+  width: 100%;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+  color: #a0a0a0; /* light grey */
+  font-style: italic; /* italic */
+  line-height: 1.6;
+}
+
+.analysis-examples p {
+  margin-bottom: 8px;
+}
+
+.example-text {
+  cursor: pointer;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+.example-text:hover {
+  color: #ffffff;
+  text-decoration: underline;
 }
 
 .analysis-form {

@@ -60,6 +60,23 @@ const Analysis = () => {
         <h1 className="analysis-title">Insight Analysis</h1>
         <p className="analysis-subtitle">Enter your prompt below to get AI-powered insights</p>
 
+        <div className="analysis-examples">
+          <p>
+            SQL example:{' '}
+            <span className="example-text" onClick={() => setPrompt('What is the average heart rate?')}>"What is the average heart rate?"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('What is the average stress score?')}>"What is the average stress score?"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('What is the correlation between heart rate and wellness?')}>"What is the correlation between heart rate and wellness?"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('How many health records are there?')}>"How many health records are there?"</span>
+          </p>
+          <p>
+            NoSQL example:{' '}
+            <span className="example-text" onClick={() => setPrompt('Show records with high heart rate and stress')}>"Show records with high heart rate and stress"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('Find similar cases with low wellness score')}>"Find similar cases with low wellness score"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('What patterns exist in high cardiovascular risk data?')}>"What patterns exist in high cardiovascular risk data?"</span>,{' '}
+            <span className="example-text" onClick={() => setPrompt('Are there similar records with abnormal vital signs?')}>"Are there similar records with abnormal vital signs?"</span>
+          </p>
+        </div>
+
         <form className="analysis-form" onSubmit={handleSubmit}>
           <div className="input-wrapper">
             <textarea
