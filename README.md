@@ -1,24 +1,25 @@
-# InSight Genesis - AI & Blockchain Platform
+Insight Genesis - AI & Blockchain Platform
 
-🚀 **InSight Genesis** là nền tảng kết hợp AI và Blockchain tiên tiến, cung cấp intelligent insights cho mọi lĩnh vực cuộc sống.
+# Insight Genesis - AI & Blockchain Platform
 
-## 🌟 Tính năng chính
+🚀 **Insight Genesis** is an advanced AI and Blockchain platform that provides intelligent insights across all areas of life.
 
-- **🤖 AI-Powered Insights**: Phân tích dữ liệu thông minh với machine learning tiên tiến
-- **🔗 Blockchain Security**: Bảo mật dữ liệu với công nghệ blockchain phi tập trung
-- **💰 IGT Staking**: Stake tokens và nhận rewards với APY lên đến 25%
-- **🏥 Multi-Domain Solutions**: Giải pháp cho Finance, Healthcare, Education, HR
-- **📊 Real-time Analytics**: Phân tích và insights trong thời gian thực
-- **🛡️ Privacy-First**: Bảo vệ quyền riêng tư và kiểm soát dữ liệu cá nhân
+## 🌟 Key Features
 
+- **🤖 AI-Powered Insights**: Smart data analysis using advanced machine learning
+- **🔗 Blockchain Security**: Secure data protection through decentralized blockchain technology
+- **💰 IGT Staking**: Stake tokens and earn rewards with APYs of up to 25%
+- **🏥 Multi-Domain Solutions**: Solutions for Finance, Healthcare, Education, and Human Resources
+- **📊 Real-Time Analytics**: Real-time analysis and actionable insights
+- **🛡️ Privacy-First**: Protects user privacy and provides control over personal data
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React 18+ với Vite
+- **Frontend**: React 18+ with Vite
 - **Routing**: React Router DOM v7
-- **Styling**: Modern CSS với Flexbox/Grid
-- **Design**: Gradient backgrounds, animations, responsive design
-- **Icons**: Emoji-based icons cho simplicity
+- **Styling**: Modern CSS with Flexbox/Grid
+- **Design**: Gradient backgrounds, animations, and responsive design
+- **Icons**: Emoji-based icons for simplicity
 
 ## 🚀 Installation & Setup
 
